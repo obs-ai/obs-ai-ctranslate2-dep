@@ -114,6 +114,9 @@ jobs:
     needs: [BuildMac] #TODO: BuildLinux, BuildWindows]
     permissions:
       contents: "write"
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: "Get Metadata"
         id: "metadata"
