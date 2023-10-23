@@ -30,10 +30,6 @@ jobs:
           echo "version=$version" > "$GITHUB_OUTPUT"
         id: "get-version"
 
-      - uses: "actions/checkout@v3"
-        with:
-          submodules: "recursive"
-
       - name: "Run CT2 build"
         run: "./build_ct2_macos.sh ${{ matrix.config }}  ${{ steps.get-version.outputs.version }}"
 
