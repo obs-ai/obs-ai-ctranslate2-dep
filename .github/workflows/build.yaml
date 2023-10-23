@@ -40,12 +40,7 @@ jobs:
 
       - uses: "actions/upload-artifact@v3"
         with:
-          name: "libctranslate2-macos-${{ steps.get-version.outputs.version }}"
-          path: "release/*.tar.gz"
-
-      - uses: "actions/upload-artifact@v3"
-        with:
-          name: "libsentencepiece-macos-${{ steps.get-version.outputs.version }}"
+          name: "libraries-macos-${{ matrix.config }}-${{ steps.get-version.outputs.version }}"
           path: "release/*.tar.gz"
 
   BuildLinux:

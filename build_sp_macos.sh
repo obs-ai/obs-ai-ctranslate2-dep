@@ -41,4 +41,4 @@ lipo -create release/x86_64/${CONFIG}/lib/libsentencepiece.a release/arm64/${CON
 cp -r release/x86_64/${CONFIG}/include release/universal/${CONFIG}/include
 
 mkdir -p ../release
-tar -C release/universal/${CONFIG} -cvf ../release/libsentencepiece-macos-${PKG_VERSION}.tar.gz .
+tar -C release/universal/${CONFIG} -cvf ../release/libsentencepiece-macos-${CONFIG}-${PKG_VERSION}.tar.gz .

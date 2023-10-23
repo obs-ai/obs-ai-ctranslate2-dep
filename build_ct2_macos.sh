@@ -61,4 +61,4 @@ cp build_x86_64_${CONFIG}/third_party/cpu_features/${CONFIG}/libcpu_features.a r
 cp -r release/x86_64/${CONFIG}/include release/universal/${CONFIG}/include
 
 mkdir -p ../release
-tar -C release/universal/${CONFIG} -cvf ../release/libctranslate2-macos-${PKG_VERSION}.tar.gz .
+tar -C release/universal/${CONFIG} -cvf ../release/libctranslate2-macos-${CONFIG}-${PKG_VERSION}.tar.gz .
