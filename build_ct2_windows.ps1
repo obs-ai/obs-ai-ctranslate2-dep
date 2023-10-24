@@ -1,15 +1,18 @@
-Param($Configuration, $Version)
+Param($Configuration)
+
+$Version = "3.20.0"
 
 # Clone CTranslate2 repo.
-git clone https://github.com/OpenNMT/CTranslate2.git "CTranslate2-$VERSION"
-cd "CTranslate2-$VERSION"
-git checkout v$VERSION
+git clone https://github.com/OpenNMT/CTranslate2.git "CTranslate2-$Version"
+Set-Location "CTranslate2-$Version"
+git checkout "v$Version"
 git submodule update --init --recursive
 
 # download OpenBLAS
 Invoke-WebRequest -Uri https://github.com/xianyi/OpenBLAS/releases/download/v0.3.24/OpenBLAS-0.3.24-x64.zip `
   -OutFile OpenBLAS-0.3.24-x64.zip
 Expand-Archive OpenBLAS-0.3.24-x64.zip -DestinationPath OpenBLAS-0.3.24-x64 -Force
+Remove-Item OpenBLAS-0.3.24-x64.zip
 
 cmake . -B build_$Configuration `
   -DBUILD_SHARED_LIBS=OFF `
@@ -26,13 +29,14 @@ cmake . -B build_$Configuration `
   -DWITH_PROFILING=OFF `
   -DBUILD_CLI=OFF `
   -DWITH_OPENBLAS=ON `
-  -DOPENBLAS_INCLUDE_DIR=OpenBLAS-0.3.24-x64\include `
-  -DOPENBLAS_LIBRARY=OpenBLAS-0.3.24-x64\lib\libopenblas.dll.a `
+  -DOPENBLAS_INCLUDE_DIR="OpenBLAS-0.3.24-x64\include" `
+  -DOPENBLAS_LIBRARY="OpenBLAS-0.3.24-x64\lib\libopenblas.dll.a" `
   -DCMAKE_BUILD_TYPE=$Configuration
 
 
 cmake --build build_$Configuration --config $Configuration
 cmake --install build_$Configuration --config $Configuration --prefix release/$Configuration
-# copy openblas .dll to release folder
-cp OpenBLAS-0.3.24-x64\bin\libopenblas.dll release\$Configuration\bin\libopenblas.dll
-Compress-Archive release\$Configuration\* release\libcurl-windows-$Version-$Configuration.zip -Verbose
+# copy openblas .dll to release folder, first create the folder
+New-Item -ItemType Directory -Force -Path release\$Configuration\bin
+Copy-Item "OpenBLAS-0.3.24-x64\bin\libopenblas.dll" "release\$Configuration\bin\libopenblas.dll"
+Compress-Archive release\$Configuration\* release\libctranslate2-windows-$Version-$Configuration.zip -Verbose

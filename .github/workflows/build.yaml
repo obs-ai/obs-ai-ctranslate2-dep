@@ -76,7 +76,6 @@ jobs:
           path: "release/*.tar.gz"
 
   BuildWindows:
-    if: false
     runs-on: "windows-2022"
 
     strategy:
@@ -105,13 +104,13 @@ jobs:
 
       - uses: "actions/upload-artifact@v3"
         with:
-          name: "libcurl-linux-${{ matrix.config }}"
+          name: "libctranslat2-windows-${{ matrix.config }}"
           path: "release/*.zip"
 
   Release:
     runs-on: "ubuntu-22.04"
     if: "github.event_name == 'push' && contains(github.ref, 'refs/tags/')"
-    needs: [BuildMac] #TODO: BuildLinux, BuildWindows]
+    needs: [BuildMac, BuildWindows] #TODO: BuildLinux
     permissions:
       contents: "write"
     defaults:
