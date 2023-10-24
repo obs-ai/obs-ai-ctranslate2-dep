@@ -35,8 +35,11 @@ cmake . -B build_$Configuration `
 
 
 cmake --build build_$Configuration --config $Configuration
-cmake --install build_$Configuration --config $Configuration --prefix release/$Configuration
+
+New-Item -ItemType Directory -Force -Path "..\release\"
+
+cmake --install build_$Configuration --config $Configuration --prefix "..\release\$Configuration"
 # copy openblas .dll to release folder, first create the folder
-New-Item -ItemType Directory -Force -Path release\$Configuration\bin
-Copy-Item "OpenBLAS-0.3.24-x64\bin\libopenblas.dll" "release\$Configuration\bin\libopenblas.dll"
-Compress-Archive release\$Configuration\* release\libctranslate2-windows-$Version-$Configuration.zip -Verbose
+New-Item -ItemType Directory -Force -Path "..\release\$Configuration\bin"
+Copy-Item "OpenBLAS-0.3.24-x64\bin\libopenblas.dll" "..\release\$Configuration\bin\libopenblas.dll"
+Compress-Archive "..\release\$Configuration\*" "..\release\libctranslate2-windows-$Version-$Configuration.zip" -Verbose
