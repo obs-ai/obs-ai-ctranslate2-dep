@@ -97,8 +97,11 @@ jobs:
         with:
           submodules: "recursive"
 
-      - name: "Run Build Windows ps1"
+      - name: "Run Build CT2 Windows ps1"
         run: "./build_ct2_windows.ps1 -Configuration ${{ matrix.config }}"
+
+      - name: "Run Build SP Windows ps1"
+        run: "./build_sp_windows.ps1 -Configuration ${{ matrix.config }}"
 
       - uses: "actions/upload-artifact@v3"
         with:
