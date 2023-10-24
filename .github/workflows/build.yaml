@@ -99,12 +99,12 @@ jobs:
         with:
           submodules: "recursive"
 
-      - name: "Run Build-Windows.ps1"
-        run: "./Build-Windows.ps1 -Configuration ${{ matrix.config }} -Version ${{ steps.get-version.outputs.version }}"
+      - name: "Run Build Windows ps1"
+        run: "./build-ct2-windows.ps1 -Configuration ${{ matrix.config }}"
 
       - uses: "actions/upload-artifact@v3"
         with:
-          name: "libctranslat2-windows-${{ matrix.config }}"
+          name: "libctranslate2-windows-${{ matrix.config }}"
           path: "release/*.zip"
 
   Release:
