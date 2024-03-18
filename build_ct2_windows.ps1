@@ -15,8 +15,14 @@ Invoke-WebRequest -Uri https://github.com/xianyi/OpenBLAS/releases/download/v$Op
 Expand-Archive OpenBLAS-$OpenBLASVersion-x64.zip -DestinationPath OpenBLAS-$OpenBLASVersion-x64 -Force
 Remove-Item OpenBLAS-$OpenBLASVersion-x64.zip
 
+if ($Configuration -eq "Release") {
+  $runtimeFlag = "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL"
+} else {
+  $runtimeFlag = "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebugDLL"
+}
+
 cmake . -B build_$Configuration `
-  -DBUILD_SHARED_LIBS=OFF `
+  -DBUILD_SHARED_LIBS=ON `
   -DOPENMP_RUNTIME=COMP `
   -DWITH_CUDA=OFF `
   -DWITH_MKL=OFF `
@@ -32,8 +38,7 @@ cmake . -B build_$Configuration `
   -DWITH_OPENBLAS=ON `
   -DOPENBLAS_INCLUDE_DIR="OpenBLAS-$OpenBLASVersion-x64\include" `
   -DOPENBLAS_LIBRARY="OpenBLAS-$OpenBLASVersion-x64\lib\libopenblas.dll.a" `
-  -DCMAKE_BUILD_TYPE=$Configuration
-
+  $runtimeFlag
 
 cmake --build build_$Configuration --config $Configuration
 
@@ -44,3 +49,7 @@ cmake --install build_$Configuration --config $Configuration --prefix "..\dist\$
 New-Item -ItemType Directory -Force -Path "..\dist\$Configuration\bin"
 Copy-Item "OpenBLAS-$OpenBLASVersion-x64\bin\libopenblas.dll" "..\dist\$Configuration\bin\libopenblas.dll"
 Compress-Archive "..\dist\$Configuration\*" "..\dist\libctranslate2-windows-$Version-$Configuration.zip" -Verbose
+
+Set-Location "..\"
+Remove-Item "CTranslate2-$Version" -Recurse -Force
+Remove-Item "dist\$Configuration" -Recurse -Force
