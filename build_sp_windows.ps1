@@ -1,6 +1,6 @@
 Param($Configuration)
 
-$Version = "0.1.99"
+$Version = "0.2.0"
 
 # Clone CTranslate2 repo.
 git clone https://github.com/google/sentencepiece.git "sentencepiece-$Version"
@@ -15,8 +15,8 @@ cmake . -B build_$Configuration `
 
 cmake --build build_$Configuration --config $Configuration
 
-New-Item -ItemType Directory -Force -Path "..\release\"
+New-Item -ItemType Directory -Force -Path "..\dist\"
 
-cmake --install build_$Configuration --config $Configuration --prefix "..\release\$Configuration"
+cmake --install build_$Configuration --config $Configuration --prefix "..\dist\$Configuration"
 
-Compress-Archive "..\release\$Configuration\*" "..\release\sentencepiece-windows-$Version-$Configuration.zip" -Verbose
+Compress-Archive "..\dist\$Configuration\*" "..\dist\sentencepiece-windows-$Version-$Configuration.zip" -Verbose
