@@ -26,19 +26,19 @@ function build_for_arch() {
     -DCMAKE_BUILD_TYPE=${CONFIG}
 
   cmake --build build_${ARCH}_${CONFIG} --config ${CONFIG} -- -arch ${ARCH} ONLY_ACTIVE_ARCH=YES
-  mkdir -p release/${ARCH}/${CONFIG}
-  cmake --install build_${ARCH}_${CONFIG} --config ${CONFIG} --prefix release/${ARCH}/${CONFIG}
+  mkdir -p dist/${ARCH}/${CONFIG}
+  cmake --install build_${ARCH}_${CONFIG} --config ${CONFIG} --prefix dist/${ARCH}/${CONFIG}
 }
 
 build_for_arch x86_64
 build_for_arch arm64
 
 # Create universal binary.
-mkdir -p release/universal/${CONFIG}/lib
-lipo -create release/x86_64/${CONFIG}/lib/libsentencepiece.a release/arm64/${CONFIG}/lib/libsentencepiece.a -output release/universal/${CONFIG}/lib/libsentencepiece.a
+mkdir -p dist/universal/${CONFIG}/lib
+lipo -create dist/x86_64/${CONFIG}/lib/libsentencepiece.a dist/arm64/${CONFIG}/lib/libsentencepiece.a -output dist/universal/${CONFIG}/lib/libsentencepiece.a
 
 # Copy headers.
-cp -r release/x86_64/${CONFIG}/include release/universal/${CONFIG}/include
+cp -r dist/x86_64/${CONFIG}/include dist/universal/${CONFIG}/include
 
-mkdir -p ../release
-tar -C release/universal/${CONFIG} -cvf ../release/libsentencepiece-macos-${CONFIG}-${PKG_VERSION}.tar.gz .
+mkdir -p ../dist
+tar -C dist/universal/${CONFIG} -cvf ../dist/libsentencepiece-macos-${CONFIG}-${PKG_VERSION}.tar.gz .
