@@ -4,7 +4,7 @@ set -euo pipefail
 CONFIG=${1?}
 PKG_VERSION=${2?}
 
-VERSION=3.20.0
+VERSION="4.1.1"
 
 if [ ! -d "CTranslate2-$VERSION" ]; then
   # Clone CTranslate2 repo.
@@ -42,23 +42,23 @@ function build_for_arch() {
     -DCMAKE_BUILD_TYPE=${CONFIG}
 
   cmake --build build_${ARCH}_${CONFIG} --config ${CONFIG} -- -arch ${ARCH} ONLY_ACTIVE_ARCH=YES
-  mkdir -p release/${ARCH}/${CONFIG}
-  cmake --install build_${ARCH}_${CONFIG} --config ${CONFIG} --prefix release/${ARCH}/${CONFIG}
+  mkdir -p dist/${ARCH}/${CONFIG}
+  cmake --install build_${ARCH}_${CONFIG} --config ${CONFIG} --prefix dist/${ARCH}/${CONFIG}
 }
 
 build_for_arch x86_64
 build_for_arch arm64
 
-if [ -d release/universal/${CONFIG}/lib ]; then
-  rm -rf release/universal/${CONFIG}/lib
+if [ -d dist/universal/${CONFIG}/lib ]; then
+  rm -rf dist/universal/${CONFIG}/lib
 fi
 # Create universal binary.
-mkdir -p release/universal/${CONFIG}/lib
-lipo -create release/x86_64/${CONFIG}/lib/libctranslate2.a release/arm64/${CONFIG}/lib/libctranslate2.a -output release/universal/${CONFIG}/lib/libctranslate2.a
-cp build_x86_64_${CONFIG}/third_party/cpu_features/${CONFIG}/libcpu_features.a release/universal/${CONFIG}/lib
+mkdir -p dist/universal/${CONFIG}/lib
+lipo -create dist/x86_64/${CONFIG}/lib/libctranslate2.a dist/arm64/${CONFIG}/lib/libctranslate2.a -output dist/universal/${CONFIG}/lib/libctranslate2.a
+cp build_x86_64_${CONFIG}/third_party/cpu_features/${CONFIG}/libcpu_features.a dist/universal/${CONFIG}/lib
 
 # Copy headers.
-cp -r release/x86_64/${CONFIG}/include release/universal/${CONFIG}/include
+cp -r dist/x86_64/${CONFIG}/include dist/universal/${CONFIG}/include
 
-mkdir -p ../release
-tar -C release/universal/${CONFIG} -cvf ../release/libctranslate2-macos-${CONFIG}-${PKG_VERSION}.tar.gz .
+mkdir -p ../dist
+tar -C dist/universal/${CONFIG} -cvf ../dist/libctranslate2-macos-${CONFIG}-${PKG_VERSION}.tar.gz .

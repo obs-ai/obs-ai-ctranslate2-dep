@@ -29,7 +29,7 @@ jobs:
           echo "version=$version" > "$GITHUB_OUTPUT"
         id: "get-version"
 
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
 
       - name: "Run CT2 build"
         run: "./build_ct2_macos.sh ${{ matrix.config }}  ${{ steps.get-version.outputs.version }}"
@@ -37,10 +37,10 @@ jobs:
       - name: "Run SP build"
         run: "./build_sp_macos.sh ${{ matrix.config }}  ${{ steps.get-version.outputs.version }}"
 
-      - uses: "actions/upload-artifact@v3"
+      - uses: "actions/upload-artifact@v4"
         with:
           name: "libraries-macos-${{ matrix.config }}-${{ steps.get-version.outputs.version }}"
-          path: "release/*.tar.gz"
+          path: "dist/*.tar.gz"
 
   BuildLinux:
     if: false
@@ -62,17 +62,17 @@ jobs:
           echo "version=$version" > "$GITHUB_OUTPUT"
         id: "get-version"
 
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
         with:
           submodules: "recursive"
 
       - name: "Run build-linux.sh"
         run: "./build-linux.sh ${{ matrix.config }} ${{ steps.get-version.outputs.version }}"
 
-      - uses: "actions/upload-artifact@v3"
+      - uses: "actions/upload-artifact@v4"
         with:
           name: "libcurl-linux-${{ matrix.config }}"
-          path: "release/*.tar.gz"
+          path: "dist/*.tar.gz"
 
   BuildWindows:
     runs-on: "windows-2022"
@@ -93,7 +93,7 @@ jobs:
           echo "version=$version" > "$GITHUB_OUTPUT"
         id: "get-version"
 
-      - uses: "actions/checkout@v3"
+      - uses: "actions/checkout@v4"
         with:
           submodules: "recursive"
 
@@ -103,10 +103,10 @@ jobs:
       - name: "Run Build SP Windows ps1"
         run: "./build_sp_windows.ps1 -Configuration ${{ matrix.config }}"
 
-      - uses: "actions/upload-artifact@v3"
+      - uses: "actions/upload-artifact@v4"
         with:
           name: "libctranslate2-windows-${{ matrix.config }}"
-          path: "release/*.zip"
+          path: "dist/*.zip"
 
   Release:
     runs-on: "ubuntu-22.04"
@@ -124,7 +124,7 @@ jobs:
           echo "version=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
       - name: "Download build artifacts"
-        uses: "actions/download-artifact@v3"
+        uses: "actions/download-artifact@v4"
 
       - name: Generate Checksums 🪪
         run: |
@@ -138,7 +138,7 @@ jobs:
           done
 
       - name: "Create Release"
-        uses: "softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5"
+        uses: "softprops/action-gh-release@v2"
         with:
           draft: true
           tag_name: "${{ steps.metadata.outputs.version }}"
