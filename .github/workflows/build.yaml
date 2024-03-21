@@ -114,7 +114,7 @@ jobs:
       - name: Setup filename
         shell: pwsh
         run: |
-          if (${{ matrix.cuda }} -eq 'cpu') {
+          if ("${{ matrix.cuda }}" -eq 'cpu') {
             echo "FILENAME=cpu" >> $Env:GITHUB_ENV
           } else {
             echo "FILENAME=cuda${{ matrix.cuda }}" >> $Env:GITHUB_ENV
