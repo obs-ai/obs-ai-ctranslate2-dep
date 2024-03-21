@@ -111,18 +111,9 @@ jobs:
       - name: "Run Build SP Windows ps1"
         run: "./build_sp_windows.ps1 -Configuration ${{ matrix.config }}"
 
-      - name: Setup filename
-        shell: pwsh
-        run: |
-          if ("${{ matrix.cuda }}" -eq 'cpu') {
-            echo "FILENAME=cpu" >> $Env:GITHUB_ENV
-          } else {
-            echo "FILENAME=cuda${{ matrix.cuda }}" >> $Env:GITHUB_ENV
-          }
-
       - uses: "actions/upload-artifact@v4"
         with:
-          name: "libctranslate2-windows-${{ matrix.config }}-$Env:FILENAME"
+          name: "libctranslate2-windows-${{ matrix.config }}-${{ matrix.cuda }}"
           path: "dist/*.zip"
 
   Release:
