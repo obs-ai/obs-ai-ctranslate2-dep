@@ -81,6 +81,7 @@ jobs:
       matrix:
         config:
           - "Release"
+        cuda: [ 'cpu', '12.2.0', '11.8.0' ]
 
     steps:
       - name: "Get version"
@@ -93,19 +94,26 @@ jobs:
           echo "version=$version" > "$GITHUB_OUTPUT"
         id: "get-version"
 
+      - uses: Jimver/cuda-toolkit@v0.2.14
+        if: matrix.cuda != 'cpu'
+        id: cuda-toolkit
+        with:
+          cuda: ${{ matrix.cuda }}
+          method: 'local'
+
       - uses: "actions/checkout@v4"
         with:
           submodules: "recursive"
 
       - name: "Run Build CT2 Windows ps1"
-        run: "./build_ct2_windows.ps1 -Configuration ${{ matrix.config }}"
+        run: "./build_ct2_windows.ps1 -Configuration ${{ matrix.config }} -CudaVersionOrCpu ${{ matrix.cuda }}"
 
       - name: "Run Build SP Windows ps1"
         run: "./build_sp_windows.ps1 -Configuration ${{ matrix.config }}"
 
       - uses: "actions/upload-artifact@v4"
         with:
-          name: "libctranslate2-windows-${{ matrix.config }}"
+          name: "libctranslate2-windows-${{ matrix.config }}-${{ matrix.cuda }}"
           path: "dist/*.zip"
 
   Release:
